@@ -127,6 +127,40 @@ export default function Test1() {
             targetY = clamp(targetY, 0, maxScrollY);
         });
 
+        // タッチイベントの追加
+        const handleTouchStart = (e: TouchEvent) => {
+            isDragging = true;
+            dragStartY = e.touches[0].clientY;
+            dragStartScrollY = y;
+            document.body.style.userSelect = 'none';
+            e.preventDefault();
+        };
+
+        const handleTouchMove = (e: TouchEvent) => {
+            if (!isDragging) return;
+
+            const deltaY = e.touches[0].clientY - dragStartY;
+            const scrollbarHeight = window.innerHeight;
+            const thumbHeight = scrollbarThumb.offsetHeight;
+            const maxThumbTravel = scrollbarHeight - thumbHeight;
+            const scrollRatio = maxScrollY / maxThumbTravel;
+
+            targetY = dragStartScrollY - (deltaY * scrollRatio);
+            targetY = clamp(targetY, 0, maxScrollY);
+        };
+
+        const handleTouchEnd = () => {
+            if (isDragging) {
+                isDragging = false;
+                document.body.style.userSelect = '';
+            }
+        };
+
+        // タッチイベントリスナーの追加
+        document.addEventListener('touchstart', handleTouchStart);
+        document.addEventListener('touchmove', handleTouchMove);
+        document.addEventListener('touchend', handleTouchEnd);
+
         const resize = () => {
             //
             WEBGL.onResize();
@@ -141,7 +175,7 @@ export default function Test1() {
 
         const update = () => {
             //
-            
+
             // スクロールのオーバーライド処理をupdate関数内で実行（慣性付き）
             y = trunc3(lerp(y, targetY, lerpFactor));
             (content as HTMLElement)!.style.transform = `translateY(${-y}px)`;
@@ -195,20 +229,20 @@ export default function Test1() {
                     </section>
 
                     <section className="mt-[min(24px,6.4vw)] md:mt-[min(160px,11.111vw)]">
-                <ul className="grid grid-cols-1 md:grid-cols-3 gap-y-[min(16px,4.266vw)] md:gap-y-[min(128px,8.888vw)] w-[min(327px,87.2vw)] md:w-[min(1248px,86.666vw)] mx-auto">
-                    {posts.map((item, index) => (
-                        <div className={`${selectedCategory === "all" || item.category.includes(selectedCategory) ? "opacity-100" : "absolute top-0 left-0 opacity-0 w-[0px] h-[0px] overflow-hidden pointer-events-none"}`} key={index}>
-                            <WorkListItem
-                                key={index}
-                                item={item}
-                                handleClick={handleClick}
-                                setSelectedCategory={setSelectedCategory}
-                                convertCategoryText={convertCategoryText}
-                            />
-                        </div>
-                    ))}
-                </ul>
-            </section>
+                        <ul className="grid grid-cols-1 md:grid-cols-3 gap-y-[min(16px,4.266vw)] md:gap-y-[min(128px,8.888vw)] w-[min(327px,87.2vw)] md:w-[min(1248px,86.666vw)] mx-auto">
+                            {posts.map((item, index) => (
+                                <div className={`${selectedCategory === "all" || item.category.includes(selectedCategory) ? "opacity-100" : "absolute top-0 left-0 opacity-0 w-[0px] h-[0px] overflow-hidden pointer-events-none"}`} key={index}>
+                                    <WorkListItem
+                                        key={index}
+                                        item={item}
+                                        handleClick={handleClick}
+                                        setSelectedCategory={setSelectedCategory}
+                                        convertCategoryText={convertCategoryText}
+                                    />
+                                </div>
+                            ))}
+                        </ul>
+                    </section>
                 </div>
             </div>
 
