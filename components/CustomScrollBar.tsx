@@ -47,7 +47,7 @@ export default function CustomScrollbar() {
         const thumbPosition = Math.min(clickPercentage * trackHeight, maxThumbPosition);
         const scrollPercentage = thumbPosition / maxThumbPosition;
         //
-        t
+        
     };
 
     return (
