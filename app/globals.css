@@ -24,3 +24,48 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+
+/* カスタムスクロールバー */
+.custom-scrollbar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 14px;
+  height: 100vh;
+  background: #fafafa;
+  border-left: 1px solid #e7e7e7;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.scrollbar-track {
+  width: 100%;
+  height: 100%;
+  background: #fafafa;
+  border-radius: 6px;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.scrollbar-track:hover {
+  opacity: 1;
+}
+
+.scrollbar-thumb {
+  width: 80%;
+  margin: 0 auto;
+  background: #c7c7c7;
+  border-radius: 6px;
+  min-height: 20px;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.scrollbar-thumb:hover {
+  background: #777777;
+}
+
+.scrollbar-thumb:active {
+  background: #777777;
+}
