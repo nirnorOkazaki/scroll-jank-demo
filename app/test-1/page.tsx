@@ -212,7 +212,7 @@ export default function Test1() {
                 </div>
             </div>
 
-            <div className="custom-scrollbar">
+            <div className="hidden md:block custom-scrollbar">
                 <div className="scrollbar-track" id="scrollbar-track">
                     <div className="scrollbar-thumb" id="scrollbar-thumb"></div>
                 </div>
