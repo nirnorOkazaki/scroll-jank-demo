@@ -122,44 +122,45 @@ export default function Test1() {
 
         const scroller = new VirtualScroll({ preventTouch: false, touchMultiplier: 3, mouseMultiplier: 0.5 });
         scroller.on((event) => {
+            // タッチ操作中はVirtualScrollのイベントを無視
+            if (isDragging) return;
+            
             // スクロールイベントでは値の更新のみ行う
             targetY = event ? targetY - event.deltaY : targetY;
             targetY = clamp(targetY, 0, maxScrollY);
         });
 
         // タッチイベントの追加
+        let touchStartY = 0;
+        let touchStartScrollY = 0;
+        let isTouching = false;
+
         const handleTouchStart = (e: TouchEvent) => {
-            isDragging = true;
-            dragStartY = e.touches[0].clientY;
-            dragStartScrollY = y;
-            document.body.style.userSelect = 'none';
-            e.preventDefault();
+            isTouching = true;
+            touchStartY = e.touches[0].clientY;
+            touchStartScrollY = targetY;
         };
 
         const handleTouchMove = (e: TouchEvent) => {
-            if (!isDragging) return;
+            if (!isTouching) return;
 
-            const deltaY = e.touches[0].clientY - dragStartY;
-            const scrollbarHeight = window.innerHeight;
-            const thumbHeight = scrollbarThumb.offsetHeight;
-            const maxThumbTravel = scrollbarHeight - thumbHeight;
-            const scrollRatio = maxScrollY / maxThumbTravel;
-
-            targetY = dragStartScrollY - (deltaY * scrollRatio);
+            const currentY = e.touches[0].clientY;
+            const deltaY = touchStartY - currentY; // 符号を逆転（上スワイプで正の値）
+            
+            targetY = touchStartScrollY + (deltaY * 2); // 倍率を調整
             targetY = clamp(targetY, 0, maxScrollY);
+            
+            e.preventDefault();
         };
 
         const handleTouchEnd = () => {
-            if (isDragging) {
-                isDragging = false;
-                document.body.style.userSelect = '';
-            }
+            isTouching = false;
         };
 
         // タッチイベントリスナーの追加
-        document.addEventListener('touchstart', handleTouchStart);
-        document.addEventListener('touchmove', handleTouchMove);
-        document.addEventListener('touchend', handleTouchEnd);
+        document.addEventListener('touchstart', handleTouchStart, { passive: true });
+        document.addEventListener('touchmove', handleTouchMove, { passive: false });
+        document.addEventListener('touchend', handleTouchEnd, { passive: true });
 
         const resize = () => {
             //
